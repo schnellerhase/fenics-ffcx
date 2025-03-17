@@ -298,6 +298,9 @@ class LiteralFloat(LExprTerminal):
 
     def __float__(self):
         """Convert to float."""
+        if isinstance(self.value, complex):
+            raise RuntimeError("__float__ of a complex value not defined.")
+
         return float(self.value)
 
     def __repr__(self):
@@ -315,6 +318,10 @@ class LiteralInt(LExprTerminal):
         assert isinstance(value, (int, np.number))
         self.value = value
         self.dtype = DataType.INT
+
+    def __int__(self):
+        """Overwrites int()."""
+        return self.value
 
     def __eq__(self, other):
         """Check equality."""
@@ -446,6 +453,8 @@ class PrefixUnaryOp(LExprOperator):
 
 class BinOp(LExprOperator):
     """A binary operator."""
+
+    op = ""
 
     def __init__(self, lhs, rhs):
         """Initialise."""
@@ -955,7 +964,6 @@ class VariableDecl(Declaration):
         """Check equality."""
         return (
             isinstance(other, type(self))
-            and self.typename == other.typename
             and self.symbol == other.symbol
             and self.value == other.value
         )

@@ -76,11 +76,11 @@ def reference_facet_volume(tablename, cellname):
     """Write a reference facet volume."""
     celltype = getattr(basix.CellType, cellname)
     volumes = basix.cell.facet_reference_volumes(celltype)
-    for i in volumes[1:]:
-        if not np.isclose(i, volumes[0]):
+    for i in volumes[1:]:  # type: ignore
+        if not np.isclose(i, volumes[0]):  # type: ignore
             raise ValueError("Reference facet volume not supported for this cell type.")
     symbol = L.Symbol(f"{cellname}_{tablename}", dtype=L.DataType.REAL)
-    return L.VariableDecl(symbol, volumes[0])
+    return L.VariableDecl(symbol, volumes[0])  # type: ignore
 
 
 def reference_cell_edge_vectors(tablename, cellname):
@@ -88,7 +88,7 @@ def reference_cell_edge_vectors(tablename, cellname):
     celltype = getattr(basix.CellType, cellname)
     topology = basix.topology(celltype)
     geometry = basix.geometry(celltype)
-    edge_vectors = [geometry[j] - geometry[i] for i, j in topology[1]]
+    edge_vectors = [geometry[j] - geometry[i] for i, j in topology[1]]  # type: ignore
     out = np.array(edge_vectors)
     symbol = L.Symbol(f"{cellname}_{tablename}", dtype=L.DataType.REAL)
     return L.ArrayDecl(symbol, values=out, const=True)
@@ -108,10 +108,11 @@ def reference_facet_edge_vectors(tablename, cellname):
     edge_vectors = []
     for facet in topology[-2]:
         if len(facet) == 3:
-            edge_vectors += [geometry[facet[j]] - geometry[facet[i]] for i, j in triangle_edges]
+            edge_vectors += [geometry[facet[j]] - geometry[facet[i]] for i, j in triangle_edges]  # type: ignore
         elif len(facet) == 4:
             edge_vectors += [
-                geometry[facet[j]] - geometry[facet[i]] for i, j in quadrilateral_edges
+                geometry[facet[j]] - geometry[facet[i]]
+                for i, j in quadrilateral_edges  # type: ignore
             ]
         else:
             raise ValueError("Only triangular and quadrilateral faces supported.")

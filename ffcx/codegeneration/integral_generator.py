@@ -209,7 +209,7 @@ class IntegralGenerator:
             ufl.geometry.ReferenceNormal: "reference_normals",
             ufl.geometry.FacetOrientation: "facet_orientation",
         }
-        cells: dict[Any, set[Any]] = {t: set() for t in ufl_geometry.keys()}  # type: ignore
+        cells: dict[Any, set[Any]] = {t: set() for t in ufl_geometry.keys()}
 
         for integrand in self.ir.expression.integrand.values():
             for attr in integrand["factorization"].nodes.values():
