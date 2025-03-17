@@ -28,6 +28,7 @@ parser = argparse.ArgumentParser(
 )
 parser.add_argument("--version", action="version", version=f"%(prog)s (version {FFCX_VERSION})")
 parser.add_argument("-o", "--output-directory", type=str, default=".", help="output directory")
+parser.add_argument("-L", "--language", type=str, default="C", help="target language")
 parser.add_argument("--visualise", action="store_true", help="visualise the IR graph")
 parser.add_argument("-p", "--profile", action="store_true", help="enable profiling")
 
@@ -72,7 +73,7 @@ def main(args=None):
         ufd = ufl.algorithms.load_ufl_file(filename)
 
         # Generate code
-        code_h, code_c = compiler.compile_ufl_objects(
+        code_h, code_c, suffixes = compiler.compile_ufl_objects(
             ufd.forms + ufd.expressions + ufd.elements,
             options=options,
             object_names=ufd.object_names,
@@ -81,7 +82,7 @@ def main(args=None):
         )
 
         # Write to file
-        formatting.write_code(code_h, code_c, prefix, xargs.output_directory)
+        formatting.write_code(code_h, code_c, prefix, suffixes, xargs.output_directory)
 
         # Turn off profiling and write status to file
         if xargs.profile:
