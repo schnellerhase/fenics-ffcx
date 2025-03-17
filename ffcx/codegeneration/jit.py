@@ -8,6 +8,7 @@
 from __future__ import annotations
 
 import importlib
+import importlib.util
 import io
 import logging
 import os
@@ -110,7 +111,7 @@ def get_cached_module(module_name, object_names, cache_dir, timeout):
         for i in range(timeout):
             if os.path.exists(ready_name):
                 spec = finder.find_spec(module_name)
-                if spec is None:
+                if spec is None or spec.loader is None:
                     raise ModuleNotFoundError("Unable to find JIT module.")
                 compiled_module = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(compiled_module)
@@ -410,11 +411,12 @@ def _load_objects(cache_dir, module_name, object_names):
     # (new) modules are found
     finder.invalidate_caches()
     spec = finder.find_spec(module_name)
-    if spec is None:
+    if spec is None or spec.loader is None:
         raise ModuleNotFoundError("Unable to find JIT module.")
 
     # Load module
     compiled_module = importlib.util.module_from_spec(spec)
+
     spec.loader.exec_module(compiled_module)
 
     compiled_objects = []

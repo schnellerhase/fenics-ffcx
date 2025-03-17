@@ -84,8 +84,11 @@ disallow_any_unimported = false # most of these come from UFL
 
 [[tool.mypy.overrides]]
 module = ["ffcx.ir.*", "ffcx.codegeneration.*"]
-check_untyped_defs = false
 disallow_untyped_defs = false 
+
+[[tool.mypy.overrides]]
+module = ["ffcx.ir.*"]
+check_untyped_defs = false
 
 [tool.ruff]
 line-length = 100

@@ -186,10 +186,7 @@ class FFCXBackendSymbols:
         else:
             entity = self.entity(entity_type, restriction)
 
-        if tabledata.is_piecewise:
-            iq = 0
-        else:
-            iq = self.quadrature_loop_index
+        iq = 0 if tabledata.is_piecewise else self.quadrature_loop_index
 
         if tabledata.is_permuted:
             qp = self.quadrature_permutation[0]
