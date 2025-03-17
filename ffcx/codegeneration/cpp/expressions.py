@@ -41,14 +41,12 @@ def generator(ir, options):
     d["tabulate_expression"] = CF.c_format(parts)
 
     if len(ir.original_coefficient_positions) > 0:
-        d[
-            "original_coefficient_positions"
-        ] = f"original_coefficient_positions_{ir.name}"
+        d["original_coefficient_positions"] = f"original_coefficient_positions_{ir.name}"
         n = len(ir.original_coefficient_positions)
         originals = ", ".join(str(i) for i in ir.original_coefficient_positions)
-        d[
-            "original_coefficient_positions_init"
-        ] = f"static int original_coefficient_positions_{ir.name}[{n}] = {{{originals}}};"
+        d["original_coefficient_positions_init"] = (
+            f"static int original_coefficient_positions_{ir.name}[{n}] = {{{originals}}};"
+        )
 
     else:
         d["original_coefficient_positions"] = "NULL"
@@ -78,9 +76,9 @@ def generator(ir, options):
     if len(ir.coefficient_names) > 0:
         names = ", ".join(f'"{name}"' for name in ir.coefficient_names)
         n = len(ir.coefficient_names)
-        d[
-            "coefficient_names_init"
-        ] = f"static const char* coefficient_names_{ir.name}[{n}] = {{{names}}};"
+        d["coefficient_names_init"] = (
+            f"static const char* coefficient_names_{ir.name}[{n}] = {{{names}}};"
+        )
 
         d["coefficient_names"] = f"coefficient_names_{ir.name}"
     else:
@@ -90,9 +88,9 @@ def generator(ir, options):
     if len(ir.constant_names) > 0:
         names = ", ".join(f'"{name}"' for name in ir.constant_names)
         n = len(ir.constant_names)
-        d[
-            "constant_names_init"
-        ] = f"static const char* constant_names_{ir.name}[{n}] = {{{names}}};"
+        d["constant_names_init"] = (
+            f"static const char* constant_names_{ir.name}[{n}] = {{{names}}};"
+        )
         d["constant_names"] = f"constant_names_{ir.name}"
     else:
         d["constant_names_init"] = ""
@@ -103,9 +101,7 @@ def generator(ir, options):
     # FIXME: Should be handled differently, revise how
     # ufcx_function_space is generated (also for ufcx_form)
     for name, (element, dofmap, cmap_family, cmap_degree) in ir.function_spaces.items():
-        code += [
-            f"static ufcx_function_space function_space_{name}_{ir.name_from_uflfile} ="
-        ]
+        code += [f"static ufcx_function_space function_space_{name}_{ir.name_from_uflfile} ="]
         code += ["{"]
         code += [f".finite_element = &{element},"]
         code += [f".dofmap = &{dofmap},"]
@@ -123,9 +119,9 @@ def generator(ir, options):
             for (name, _) in ir.function_spaces.items()
         )
         n = len(ir.function_spaces.items())
-        d[
-            "function_spaces_init"
-        ] = f"ufcx_function_space* function_spaces_{ir.name}[{n}] = {{{fs_list}}};"
+        d["function_spaces_init"] = (
+            f"ufcx_function_space* function_spaces_{ir.name}[{n}] = {{{fs_list}}};"
+        )
     else:
         d["function_spaces"] = "NULL"
         d["function_spaces_init"] = ""
@@ -133,14 +129,8 @@ def generator(ir, options):
     # Check that no keys are redundant or have been missed
     from string import Formatter
 
-    fields = [
-        fname
-        for _, fname, _, _ in Formatter().parse(expressions_template.factory)
-        if fname
-    ]
-    assert set(fields) == set(
-        d.keys()
-    ), "Mismatch between keys in template and in formatting dict"
+    fields = [fname for _, fname, _, _ in Formatter().parse(expressions_template.factory) if fname]
+    assert set(fields) == set(d.keys()), "Mismatch between keys in template and in formatting dict"
 
     # Format implementation code
     implementation = expressions_template.factory.format_map(d)

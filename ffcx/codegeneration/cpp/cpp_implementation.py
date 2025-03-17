@@ -33,7 +33,8 @@ math_table = {
     "bessel_j": "std::cyl_bessel_j",
     "conj": "std::conj",
     "real": "std::real",
-    "imag": "std::imag"}
+    "imag": "std::imag",
+}
 
 
 def build_initializer_lists(values):
@@ -49,6 +50,7 @@ def build_initializer_lists(values):
 
 class CppFormatter:
     """C++ formatter."""
+
     def __init__(self, scalar) -> None:
         """Initialise."""
         self.scalar_type = "T"

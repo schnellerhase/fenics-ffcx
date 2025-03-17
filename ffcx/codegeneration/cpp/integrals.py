@@ -21,7 +21,6 @@ def generator(ir, options):
     logger.info(f"--- type: {ir.expression.integral_type}")
     logger.info(f"--- name: {ir.expression.name}")
 
-
     factory_name = ir.expression.name
 
     # Format declaration
